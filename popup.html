@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: monospace; width: 300px; }
+    h3 { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h3>Domains</h3>
+  <div id="domains"></div>
+
+  <h3>IPs</h3>
+  <div id="ips"></div>
+
+  <script>
+    async function load() {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+      chrome.runtime.sendMessage(
+        { type: "GET_TAB_DATA", tabId: tab.id },
+        (res) => {
+          const domainsEl = document.getElementById("domains");
+          const ipsEl = document.getElementById("ips");
+
+          domainsEl.innerHTML = res.domains.map(d => `- ${d}`).join("<br>");
+          ipsEl.innerHTML = res.ips.map(i => `- ${i}`).join("<br>");
+        }
+      );
+    }
+
+    load();
+  </script>
+</body>
+</html>
